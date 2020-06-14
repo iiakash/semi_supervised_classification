@@ -2,10 +2,10 @@ import time
 import numpy as np
         
 import dcca
-import networks_ss
+import networks
 import torch
 import torch.nn as nn
-import helpers
+import functions
 import matplotlib.pyplot as plt
 from sklearn.metrics import accuracy_score, precision_score, recall_score
 
