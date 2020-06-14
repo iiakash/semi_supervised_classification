@@ -4,7 +4,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch.utils.data import Dataset, DataLoader
 
-import helpers
+import functions
 import networks
 import dataset
 
@@ -94,7 +94,7 @@ def train(self, network, network_criterion, lr, weight_decay, tr_loader, tr_data
 
               #updating the weights of the clustering friendly channels wrt combined loss
 
-              bottleneck_layer = helpers.get_bottleneck_name(self.network)
+              bottleneck_layer = functions.get_bottleneck_name(self.network)
 
               #train_reporter.print_grads(network)
 
@@ -157,9 +157,9 @@ def train(self, network, network_criterion, lr, weight_decay, tr_loader, tr_data
 
               for i in range(no_of_channels):
                   channel = embeddings[:,i,:].numpy()
-                  choice_cluster, initial_centers, cluster_ass = helpers.kmeansalter(channel, self.n_clusters)
+                  choice_cluster, initial_centers, cluster_ass = functions.kmeansalter(channel, self.n_clusters)
                   labels[np.where(labels > 0)] = 1
-                  interim_acc = helpers.metrics.acc(labels[1:].flatten(), choice_cluster)
+                  interim_acc = functions.metrics.acc(labels[1:].flatten(), choice_cluster)
                   list_of_interim_acc.append(interim_acc)
                   cluster_label_pre.append(torch.from_numpy(choice_cluster).unsqueeze(0).transpose(1,0))
                   cluster_label = torch.cat(cluster_label_pre, dim = 1)
@@ -168,12 +168,12 @@ def train(self, network, network_criterion, lr, weight_decay, tr_loader, tr_data
                   center_designation_pre.append(cluster_ass.unsqueeze(0).transpose(1,0))
                   center_designation = torch.cat(center_designation_pre, dim = 1)
 
-              average_acc = (np.sum(helpers.averaged_acc(np.asarray(list_of_interim_acc), self.no_of_clustering_channels))*100)/self.no_of_clustering_channels
+              average_acc = (np.sum(functions.averaged_acc(np.asarray(list_of_interim_acc), self.no_of_clustering_channels))*100)/self.no_of_clustering_channels
               list_of_average_acc.append(average_acc)
-              batched_center_designation = list(helpers.divide_batches(center_designation, self.batch_size))
-              center_distances, ranks_of_center_distances = helpers.rank_channels(centers)
+              batched_center_designation = list(functions.divide_batches(center_designation, self.batch_size))
+              center_distances, ranks_of_center_distances = functions.rank_channels(centers)
               end = time.time()
-              hours, minutes, seconds = helpers.timer(since, end)
+              hours, minutes, seconds = functions.timer(since, end)
               print("Time taken {:0>2}:{:0>2}:{:05.2f}".format(int(hours),int(minutes),seconds))
 
       print('Epoch : {}/{} Network Loss : {} Clustering Loss : {} Total Loss : {}'.format(epoch+1, 
@@ -188,7 +188,9 @@ def train(self, network, network_criterion, lr, weight_decay, tr_loader, tr_data
   list_of_losses.append(list_of_clustering_loss)
   list_of_losses.append(list_of_total_loss)
 
-  return self.network, optimizer, list_of_network_loss, list_of_clustering_loss, list_of_total_loss, list_of_losses, embeddings, labels, list_of_centers, list_of_ranks_of_center_distances, list_of_center_distances, list_of_average_acc
+  return self.network, optimizer, list_of_network_loss, list_of_clustering_loss,
+list_of_total_loss, list_of_losses, embeddings, labels, list_of_centers, list_of_ranks_of_center_distances,
+list_of_center_distances, list_of_average_acc
 
 
 
