@@ -1,2 +1,2 @@
-# Semi-supervised-Classifier
-A semi supervised classifier with trained encoder layers
+# Self-supervised-Classifier
+A self supervised classifier with trained encoder layers
