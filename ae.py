@@ -191,6 +191,3 @@ def train(self, network, network_criterion, lr, weight_decay, tr_loader, tr_data
   return self.network, optimizer, list_of_network_loss, list_of_clustering_loss,
 list_of_total_loss, list_of_losses, embeddings, labels, list_of_centers, list_of_ranks_of_center_distances,
 list_of_center_distances, list_of_average_acc
-
-
-
